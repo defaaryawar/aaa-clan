@@ -156,7 +156,12 @@ export default function AboutSection() {
             <div className="grid grid-cols-2 gap-4">
               {[
                 { value: "9", label: "Member", color: "bg-[#000]", text: "text-white" },
-                { value: "47K", label: "Peak Viewers", color: "bg-[#457b9d]", text: "text-white" },
+                {
+                  value: "600K+",
+                  label: "Peak Viewers",
+                  color: "bg-[#457b9d]",
+                  text: "text-white",
+                },
                 {
                   value: "#1",
                   label: "YouTube Global",
