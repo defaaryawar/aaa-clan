@@ -1,26 +1,140 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap");
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: #fafaf8;
+  --color-foreground: #000000;
+  --color-manga-red: #e63946;
+  --color-manga-blue: #457b9d;
+  --color-manga-orange: #f4a261;
+  --color-manga-yellow: #e9c46a;
+  --font-sans: "Inter", sans-serif;
+  --font-display: "Outfit", sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #000;
+  color: #fff;
+}
+
+/* Container — centered with padding */
+.container-main {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+@media (min-width: 640px) {
+  .container-main {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Section vertical spacing */
+.section-padding {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+@media (min-width: 768px) {
+  .section-padding {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+}
+
+/* Halftone screentone pattern */
+.halftone-bg {
+  position: relative;
+}
+.halftone-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#000 0.8px, transparent 0.8px);
+  background-size: 8px 8px;
+  opacity: 0.06;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #fafaf8; }
+::-webkit-scrollbar-thumb { background: #000; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-manga-red); }
+
+/* Manga Panel */
+.manga-panel {
+  border: 3px solid #000000;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+/* Comic shadows */
+.comic-shadow { box-shadow: 6px 6px 0px 0px #000; }
+.comic-shadow-sm { box-shadow: 4px 4px 0px 0px #000; }
+.comic-shadow-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px 0px #000;
+}
+
+@layer components {
+  /* Button */
+  .manga-btn {
+    display: inline-block;
+    border: 3px solid #000;
+    box-shadow: 4px 4px 0px 0px #000;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 0 !important;
+    transition: all 0.15s ease-out;
+    cursor: pointer;
+  }
+  .manga-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0px 0px #000;
+  }
+  .manga-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px 0px #000;
+  }
+}
+
+/* Speed lines */
+.speed-lines {
+  background: repeating-linear-gradient(
+    45deg, transparent, transparent 10px, #000 10px, #000 11px
+  );
+  opacity: 0.05;
+}
+
+/* Vertical text */
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0.3em;
+}
+
+/* Outline text */
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 2px #000;
+}
+.outline-text-light {
+  color: transparent;
+  -webkit-text-stroke: 1.5px #fff;
 }
