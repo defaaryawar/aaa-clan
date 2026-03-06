@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
 const YT_LINK = "https://www.youtube.com/@ybrap";
@@ -8,29 +8,28 @@ const YT_LINK = "https://www.youtube.com/@ybrap";
 const cards = [
   {
     id: 1,
-    label: "Vol. 01",
+    label: "AAA CLAN",
     title: "AAA CLAN",
     subtitle: "Where Creators Unite",
     tag: "@weareaaaclan",
+    badge: "Vol. 01",
     img: "/images/herosection/aaaclan.jpeg",
     alt: "AAA CLAN",
     isLive: false,
   },
   {
     id: 2,
-    label: "Season 3",
+    label: "MARAPTHON",
     title: "MARAPTHON",
     subtitle: "NOW STREAMING · Click to Watch",
     tag: "LIVE",
+    badge: "Season 3",
     img: "/images/herosection/marapthon-thumbnail.webp",
     alt: "Marapthon Season 3",
     isLive: true,
   },
 ];
 
-// Shared arc animation variants — same for both click & auto-swap
-// Card going to FRONT: sweeps up and over like drawing a card from a deck
-// Card going to BACK: slides under smoothly
 function getFrontVariant() {
   return {
     x: ["12%", "70%", "0%"],
@@ -65,11 +64,9 @@ export default function HeroSection() {
     if (isAnimating) return;
     setIsAnimating(true);
     setActiveIndex((prev) => (prev === 0 ? 1 : 0));
-    // Lock during animation duration (800ms)
     setTimeout(() => setIsAnimating(false), 850);
   };
 
-  // Auto-swap every 5s if not hovered & not mid-animation
   useEffect(() => {
     if (isHovered) {
       if (autoSwapRef.current) clearInterval(autoSwapRef.current);
@@ -81,20 +78,13 @@ export default function HeroSection() {
     };
   }, [isHovered, isAnimating]);
 
-  const handleCardClick = (index: number) => {
-    if (index === activeIndex || isAnimating) return;
-    triggerSwap();
-  };
-
   return (
     <section
       id="home"
       className="relative min-h-[100svh] flex flex-col overflow-hidden pt-20 bg-[#fafaf8]"
     >
-      {/* Halftone pattern */}
       <div className="absolute inset-0 halftone-bg pointer-events-none" />
 
-      {/* Floating Japanese text */}
       <div className="absolute right-4 lg:right-8 top-28 select-none pointer-events-none vertical-text text-[6vh] lg:text-[8vh] font-black z-0 hidden md:block">
         <span className="text-[#e63946] opacity-60 drop-shadow-sm">ア</span>
         <span className="text-[#000] opacity-10">アアク</span>
@@ -103,9 +93,8 @@ export default function HeroSection() {
 
       <div className="w-full max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-10 z-10 relative flex-1 flex items-center">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 w-full items-center py-8 md:py-16">
-          {/* Left — Typography & CTA */}
+          {/* ── Left ── */}
           <div className="relative z-20">
-            {/* Live ticker */}
             <motion.a
               href={YT_LINK}
               target="_blank"
@@ -121,7 +110,6 @@ export default function HeroSection() {
               </span>
             </motion.a>
 
-            {/* Main Headline */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -140,7 +128,6 @@ export default function HeroSection() {
               </h1>
             </motion.div>
 
-            {/* Divider */}
             <motion.div
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
@@ -148,7 +135,6 @@ export default function HeroSection() {
               className="w-20 h-1 bg-[#000] origin-left my-6 sm:my-8"
             />
 
-            {/* Description */}
             <motion.p
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
@@ -160,7 +146,6 @@ export default function HeroSection() {
               live entertainment, gaming culture, and internet creativity.
             </motion.p>
 
-            {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
@@ -183,7 +168,6 @@ export default function HeroSection() {
               </a>
             </motion.div>
 
-            {/* Quick Stats */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -210,10 +194,11 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right — Card Deck */}
+          {/* ── Right — Card Deck ── */}
           <div className="relative hidden lg:flex items-center justify-center">
             <div
-              className="w-[90%] aspect-[3/4] relative z-20"
+              className="relative z-20"
+              style={{ width: "350px", height: "550px" }}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
@@ -231,38 +216,58 @@ export default function HeroSection() {
                       ease: [0.25, 0.46, 0.45, 0.94],
                       times: [0, 0.45, 1],
                     }}
-                    onClick={() => handleCardClick(index)}
-                    className={`absolute inset-0 manga-panel bg-[#000] comic-shadow overflow-hidden
+                    onClick={() => isBackCard && !isAnimating && triggerSwap()}
+                    className={`absolute inset-0 manga-panel bg-[#000] comic-shadow overflow-visible
                       ${isBackCard && !isAnimating ? "cursor-pointer" : "cursor-default"}`}
                   >
+                    {/* ── Badges OUTSIDE the card ── */}
+                    {/* Top-left: card name sticker */}
+                    <div
+                      className="absolute bg-[#e63946] text-white font-black text-[0.6rem] uppercase tracking-widest px-3 py-1.5 border-4 border-[#000] pointer-events-none"
+                      style={{
+                        top: "-14px",
+                        left: "12px",
+                        boxShadow: "3px 3px 0 #000",
+                        zIndex: 50,
+                        transform: "rotate(-2deg)",
+                      }}
+                    >
+                      {card.label}
+                    </div>
+                    {/* Top-right: badge/season sticker */}
+                    <div
+                      className="absolute bg-white text-[#000] font-black text-[0.6rem] uppercase tracking-widest px-3 py-1.5 border-4 border-[#000] pointer-events-none"
+                      style={{
+                        top: "10px",
+                        right: "-50px",
+                        boxShadow: "3px 3px 0 #000",
+                        zIndex: 50,
+                        transform: "rotate(2deg)",
+                      }}
+                    >
+                      {card.badge}
+                    </div>
                     {card.isLive ? (
-                      /* Marapthon Card */
                       <div className="w-full h-full relative overflow-hidden flex flex-col items-center justify-center">
                         <img
                           src={card.img}
                           alt={card.alt}
                           className="absolute inset-0 w-full h-full object-cover z-0 opacity-50 transition-transform duration-700"
-                          style={{
-                            transform: isActive && isHovered ? "scale(1.05)" : "scale(1)",
-                          }}
+                          style={{ transform: isActive && isHovered ? "scale(1.05)" : "scale(1)" }}
                         />
                         <div className="absolute inset-0 speed-lines opacity-15 pointer-events-none z-10" />
 
-                        <div className="absolute top-0 right-0 bg-white text-[#000] px-4 py-2 border-l-3 border-b-3 border-[#000] font-black text-sm z-30 uppercase tracking-wider">
-                          {card.label}
-                        </div>
-
-                        <div className="relative z-20 flex flex-col items-center gap-6 text-center px-8">
+                        <div className="relative z-20 flex flex-col items-center gap-4 text-center px-6">
                           <a
                             href={YT_LINK}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`w-20 h-20 bg-[#e63946] border-3 border-white rounded-full flex items-center justify-center shadow-[4px_4px_0_0_#fff] transition-all
-                              ${isActive ? "hover:scale-110 hover:shadow-[6px_6px_0_0_#fff] cursor-pointer pointer-events-auto" : "pointer-events-none"}`}
+                            className={`w-14 h-14 bg-[#e63946] border-4 border-white rounded-full flex items-center justify-center shadow-[4px_4px_0_0_#fff] transition-all
+                              ${isActive ? "hover:scale-110 cursor-pointer pointer-events-auto" : "pointer-events-none"}`}
                           >
                             <svg
-                              width="32"
-                              height="32"
+                              width="22"
+                              height="22"
                               viewBox="0 0 24 24"
                               fill="white"
                               className="ml-1"
@@ -271,7 +276,7 @@ export default function HeroSection() {
                             </svg>
                           </a>
                           <h3
-                            className="text-4xl font-black uppercase text-white leading-none"
+                            className="text-2xl font-black uppercase text-white leading-none"
                             style={{
                               fontFamily: "Outfit, sans-serif",
                               textShadow: "0 4px 10px rgba(0,0,0,0.8)",
@@ -279,44 +284,37 @@ export default function HeroSection() {
                           >
                             {card.title}
                           </h3>
-                          <p className="text-white text-sm font-bold uppercase tracking-wider drop-shadow-md">
+                          <p className="text-white text-[0.65rem] font-bold uppercase tracking-wider drop-shadow-md">
                             {card.subtitle}
                           </p>
                         </div>
 
-                        <div className="absolute bottom-0 left-0 right-0 bg-[#000] border-t-3 border-white/30 px-4 py-3 z-30 flex items-center justify-between">
-                          <h3
-                            className="text-base font-black uppercase text-white leading-none"
+                        <div className="absolute bottom-0 left-0 right-0 bg-[#000] border-t-4 border-white/20 px-3 py-2.5 z-30 flex items-center justify-between">
+                          <span
+                            className="text-sm font-black uppercase text-white"
                             style={{ fontFamily: "Outfit, sans-serif" }}
                           >
                             Watch Now
-                          </h3>
-                          <span className="text-xs font-black text-[#e63946] tracking-widest animate-pulse">
+                          </span>
+                          <span className="text-[0.65rem] font-black text-[#e63946] tracking-widest animate-pulse">
                             🔴 {card.tag}
                           </span>
                         </div>
                       </div>
                     ) : (
-                      /* Reza Arap Card */
                       <div className="w-full h-full relative overflow-hidden bg-white">
                         <img
                           src={card.img}
                           alt={card.alt}
                           className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700"
-                          style={{
-                            transform: isActive && isHovered ? "scale(1.05)" : "scale(1)",
-                          }}
+                          style={{ transform: isActive && isHovered ? "scale(1.05)" : "scale(1)" }}
                         />
                         <div className="absolute inset-0 speed-lines opacity-10 pointer-events-none z-10" />
 
-                        <div className="absolute top-0 left-0 bg-[#e63946] text-white px-4 py-2 border-r-3 border-b-3 border-[#000] font-black text-sm z-30 uppercase tracking-wider">
-                          {card.label}
-                        </div>
-
-                        <div className="absolute bottom-0 left-0 right-0 bg-white border-t-3 border-[#000] px-4 py-3 z-30 flex items-center justify-between">
+                        <div className="absolute bottom-0 left-0 right-0 bg-white border-t-4 border-[#000] px-3 py-2.5 z-30 flex items-center justify-between">
                           <div>
                             <h3
-                              className="text-base font-black uppercase text-[#000] leading-none"
+                              className="text-sm font-black uppercase text-[#000] leading-none"
                               style={{ fontFamily: "Outfit, sans-serif" }}
                             >
                               {card.title}
@@ -325,7 +323,7 @@ export default function HeroSection() {
                               {card.subtitle}
                             </p>
                           </div>
-                          <span className="text-xs font-black text-[#e63946] tracking-widest">
+                          <span className="text-[0.65rem] font-black text-[#e63946] tracking-widest">
                             {card.tag}
                           </span>
                         </div>
@@ -334,21 +332,16 @@ export default function HeroSection() {
                   </motion.div>
                 );
               })}
-            </div>
 
-            {/* Floating panel */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="absolute bottom-[2%] left-[-5%] bg-white border-3 border-[#000] comic-shadow-sm px-4 py-3 z-40 transform -rotate-3 pointer-events-none"
-            >
-              <span className="text-xs font-black uppercase tracking-widest text-[#000]">
-                EST. 2020
-              </span>
-              <br />
-              <span className="text-[0.6rem] font-bold text-[#e63946]">アアア・クラン</span>
-            </motion.div>
+              {/* Click hint */}
+              {!isAnimating && (
+                <div className="absolute -bottom-8 left-0 right-0 flex justify-center">
+                  <span className="text-[0.6rem] font-black uppercase tracking-widest text-[#000]/25">
+                    klik kartu belakang untuk ganti
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
